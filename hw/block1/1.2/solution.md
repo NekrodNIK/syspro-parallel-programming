@@ -16,7 +16,7 @@ Impossible, proof:
 - $B.4 \rightarrow B.5$.
 $$A.5 \rightarrow B.5$$
 - If `x == 1`, then only one increment executed. Since $A.5$ executed, $B.5$ not executed.
-  But $A.5 \righarrow B.5$ - contradiction.
+  But $A.5 \rightarrow B.5$ - contradiction.
 **Q.E.D.**
 
  
