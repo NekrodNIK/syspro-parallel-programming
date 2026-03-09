@@ -18,7 +18,6 @@ Impossible, proof:
 - If `x == 1`, then only one increment executed. Since $A.5$ executed, $B.5$ not executed.
 
   But $A.5 \rightarrow B.5$ - contradiction.
-
 **Q.E.D.**
 
  
