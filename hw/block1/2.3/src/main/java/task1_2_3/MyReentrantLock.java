@@ -28,7 +28,7 @@ public class MyReentrantLock {
   }
 
   public boolean tryLock() {
-    final Thread current = Thread.currentThread();
+    Thread current = Thread.currentThread();
     boolean success = false;
 
     lock.lock();
@@ -48,7 +48,7 @@ public class MyReentrantLock {
   }
 
   public void unlock() {
-    final Thread current = Thread.currentThread();
+    Thread current = Thread.currentThread();
 
     lock.lock();
     try {
