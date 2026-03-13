@@ -14,6 +14,11 @@ public class MyReentrantLock {
     holdCount = 0;
   }
 
+  /**
+   * Acquire the lock.
+   * if the lock is already acquired by another thread, the thread is blocked,
+   * otherwise, nothing happens. 
+   */
   public void lock() {
     int delay = START_DELAY;
 
@@ -27,6 +32,11 @@ public class MyReentrantLock {
     }
   }
 
+  /**
+   * Try to acquire the lock.
+   * 
+   * @return status of acquisition
+   */
   public boolean tryLock() {
     Thread current = Thread.currentThread();
     boolean success = false;
@@ -47,6 +57,12 @@ public class MyReentrantLock {
     return success;
   }
 
+  /**
+   * Release the lock.
+   * 
+   * @throws IllegalMonitorStateException if the method called by non-owning
+   *                                      thread
+   */
   public void unlock() {
     Thread current = Thread.currentThread();
 
