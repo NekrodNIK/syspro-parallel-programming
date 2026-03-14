@@ -33,7 +33,7 @@ public class TestThreadPerTaskExecutorService {
   void testSimple() throws ExecutionException {
     var f1 = service.submit(() -> "DON'T");
     var f2 = service.submit(() -> "PANIC!");
-    var f3 = service.submit(() -> f1.get() + f2.get());
+    var f3 = service.submit(() -> f1.get() + " " + f2.get());
     assertEquals("DON'T PANIC!", f3.get());
     assertEquals(3, factory.threadsNumber);
   }
@@ -49,7 +49,7 @@ public class TestThreadPerTaskExecutorService {
     try {
       f2.get();
     } catch (ExecutionException e) {
-      assertInstanceOf(RuntimeException.class, e.getSuppressed()[0]);
+      assertInstanceOf(RuntimeException.class, e.getCause());
     }
   }
 }
