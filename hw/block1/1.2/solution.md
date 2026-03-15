@@ -18,6 +18,7 @@ Impossible, proof:
 - If `x == 1`, then `B.4` executed with `x == 0`, so $B.4 \rightarrow A.5$
 
   But $A.5 \rightarrow B.5$ - contradiction.
+
 **Q.E.D.**
 
  
