@@ -17,6 +17,15 @@ public class JoinFuture<V> {
         exception = e;
       }
     });
+  }
+
+  public static <V> JoinFuture<V> createAndStart(ThreadFactory factory, Callable<V> task) {
+    JoinFuture<V> future = new JoinFuture<V>(factory, task);
+    future.start();
+    return future;
+  }
+
+  public void start() {
     thread.start();
   }
 

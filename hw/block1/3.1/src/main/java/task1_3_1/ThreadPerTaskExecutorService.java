@@ -17,6 +17,6 @@ public class ThreadPerTaskExecutorService {
    * completion.
    */
   <T> JoinFuture<T> submit(Callable<T> task) {
-    return new JoinFuture<T>(factory, task);
+    return JoinFuture.createAndStart(factory, task);
   }
 }
