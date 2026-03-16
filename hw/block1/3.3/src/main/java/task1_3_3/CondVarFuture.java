@@ -18,6 +18,13 @@ public class CondVarFuture<V> {
     this.cond = lock.newCondition();
   }
 
+  /**
+   * Waits if necessary for the computation to complete, and then retrieves its
+   * result.
+   * 
+   * @returns the computed result
+   * @throws ExecutionException - if the computation threw an exception
+   */
   public V get() throws ExecutionException {
     lock.lock();
     try {
@@ -39,6 +46,11 @@ public class CondVarFuture<V> {
     return value;
   }
 
+  /**
+   * Sets the value and notifies the thread waiting in the {@link #get()} method
+   * that
+   * this {@link CondVarFuture} has done execution.
+   */
   public void setValue(V v) {
     lock.lock();
     try {
@@ -53,6 +65,11 @@ public class CondVarFuture<V> {
     }
   }
 
+  /**
+   * Sets the throwable and notifies the thread waiting in the {@link #get()}
+   * method that
+   * this {@link CondVarFuture} has done execution.
+   */
   public void setThrowable(Throwable t) {
     lock.lock();
     try {
@@ -67,6 +84,11 @@ public class CondVarFuture<V> {
     }
   }
 
+  /**
+   * @returns `true` if this task completed. Completion may be due to normal
+   *          termination or
+   *          an exception -- in all of these cases, this method will return true.
+   */
   public boolean isDone() {
     lock.lock();
     try {
