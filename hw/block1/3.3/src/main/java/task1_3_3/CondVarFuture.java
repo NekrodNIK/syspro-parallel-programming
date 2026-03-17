@@ -59,7 +59,7 @@ public class CondVarFuture<V> {
       }
       value = v;
       done = true;
-      cond.signal();
+      cond.signalAll();
     } finally {
       lock.unlock();
     }
@@ -78,7 +78,7 @@ public class CondVarFuture<V> {
       }
       throwable = t;
       done = true;
-      cond.signal();
+      cond.signalAll();
     } finally {
       lock.unlock();
     }
