@@ -26,17 +26,23 @@ public class CondVarFuture<V> {
    * @throws ExecutionException - if the computation threw an exception
    */
   public V get() throws ExecutionException {
+    boolean interrupted = false;
+    
     lock.lock();
     try {
       while (!done) {
         try {
           cond.await();
         } catch (InterruptedException t) {
-          Thread.currentThread().interrupt();
+          interrupted = true;
         }
       }
     } finally {
       lock.unlock();
+    }
+
+    if (interrupted) {
+      Thread.currentThread().interrupt();
     }
 
     if (throwable != null) {
