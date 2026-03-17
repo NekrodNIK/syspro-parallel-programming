@@ -21,14 +21,19 @@ public class MyReentrantLock {
    */
   public void lock() {
     int delay = START_DELAY;
+    boolean interrupted = false;
 
     while (!tryLock()) {
       try {
         Thread.sleep(delay);
       } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
+        interrupted = true;
       }
       delay = Math.min(delay * 2, MAX_DELAY);
+    }
+
+    if (interrupted) {
+      Thread.currentThread().interrupt();
     }
   }
 
