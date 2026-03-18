@@ -3,6 +3,7 @@ package task1_3_3;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -38,6 +39,7 @@ public class SingleThreadExecutorService {
       queue.put(task);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
+      throw new RejectedExecutionException();
     }
 
     return future;

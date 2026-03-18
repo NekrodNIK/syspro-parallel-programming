@@ -57,11 +57,11 @@ public class CondVarFuture<V> {
    * that
    * this {@link CondVarFuture} has done execution.
    */
-  public void setValue(V v) {
+  void setValue(V v) {
     lock.lock();
     try {
       if (done) {
-        return;
+        throw new IllegalArgumentException();
       }
       value = v;
       done = true;
@@ -76,11 +76,11 @@ public class CondVarFuture<V> {
    * method that
    * this {@link CondVarFuture} has done execution.
    */
-  public void setThrowable(Throwable t) {
+  void setThrowable(Throwable t) {
     lock.lock();
     try {
       if (done) {
-        return;
+        throw new IllegalArgumentException();
       }
       throwable = t;
       done = true;
