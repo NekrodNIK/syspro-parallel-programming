@@ -1,5 +1,6 @@
 package task1_5_1;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +36,12 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
     this.executing = 0;
   }
 
+  /**
+   * Forwarder to inner.submit.
+   * 
+   * Throws `IllegalArgumentException` if user tries to submit task after
+   * `shutdown`.
+   */
   synchronized public <V> MyFuture<V> submit(Callable<V> callback) {
     if (state != State.AcceptingTasks)
       throw new IllegalArgumentException();
@@ -63,31 +70,68 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
     return inner.submit(task.callback);
   }
 
+  /**
+   * Initiates an orderly shutdown in which previously submitted tasks are
+   * executed, but no new tasks will be accepted.
+   * Invocation has no additional effect if already shut down.
+   * 
+   * This method does not wait for previously submitted tasks to complete
+   * execution. Use `awaitTermination` to do that.
+   *
+   */
   synchronized public void shutdown() {
     if (!isShutdown()) {
       state = State.Shutdown;
     }
   }
 
+  /**
+   * Returns true if this executor has been shut down.
+   * 
+   * True does not mean all submitted tasks has been completed. Use `isTerminated`
+   * to check that.
+   *
+   */
   synchronized public boolean isShutdown() {
     return state == State.Shutdown || state == State.ForceShutdown || state == State.Terminated;
   }
 
+  /**
+   * Returns true if all tasks have completed following shut down.
+   * Note that isTerminated is never true unless either shutdown or shutdownNow
+   * was called first.
+   * 
+   */
   synchronized public boolean isTerminated() {
     return state == State.Terminated;
   }
 
+  /**
+   * Forbids submission of new tasks (equivalent to `shutdown`), halts the
+   * processing of waiting tasks and
+   * returns a list of the tasks that were awaiting execution.
+   * 
+   * This method does not wait for actively executing tasks to terminate. Any
+   * already executing task **will not** be returned
+   * by this method. Use `awaitTermination` to ensure all tasks are finished.
+   * 
+   */
   synchronized public List<Callable<?>> shutdownNow() {
-    if (!isShutdown()) {
+    List<Callable<?>> result = new ArrayList<>();
+    if (state != State.ForceShutdown && state != State.Terminated) {
       state = State.ForceShutdown;
-      List<Callable<?>> result = pending.stream().map((item) -> item.callback).collect(Collectors.toList());
+      for (Task<?> task : pending) {
+        result.add(task.callback);
+      }
       pending.clear();
-      return result;
-    } else {
-      return new LinkedList<>();
     }
+    return result;
   }
 
+  /**
+   * Blocks until all tasks have completed execution after a shutdown request.
+   * 
+   */
   synchronized public boolean awaitTermination() {
     boolean interrupted = false;
     while (state != State.Terminated) {
