@@ -15,7 +15,7 @@
 - `A.3` modify `y`: `y = a_x + a_z`  
 - `0 <= x <= 1` and `a_x = x` => `0 <= a_x <= 1`  
 - `0 <= z <= 1` and `a_z = z` => `0 <= a_z <= 1`  
-- thus, `0 <= y = a_x + a_z <= 2`
+- thus, `0 <= y <= 2`
 
 ### Proof of impossibility `(x = 0, y != 2)`
 - `x = 0` => `C.4` is executed => `y = 2`
