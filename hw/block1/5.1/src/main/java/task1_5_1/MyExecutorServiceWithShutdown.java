@@ -7,10 +7,24 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class MyExecutorServiceWithShutdown implements MyExecutorService {
+  /**
+   * states of MyExecutorServiceWithShutdown
+   * -- Transitions --
+   * AcceptingTasks -> Shutdown
+   * AcceptingTasks -> ForceShutdown
+   * Shutdown -> Terminated
+   * ForceShutdown -> Terminated
+   */
   private enum State {
+    // default service state, the service accepts tasks.
     AcceptingTasks,
+    // no longer accepts new tasks and executes all previously submitted tasks.
     Shutdown,
+    // no longer accepts new tasks,
+    // continues to execute those already running,
+    // discards pending tasks.
     ForceShutdown,
+    // No longer accepts new tasks and will no longer execute any task.
     Terminated,
   }
 

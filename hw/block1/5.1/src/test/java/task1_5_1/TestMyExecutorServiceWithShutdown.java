@@ -92,4 +92,9 @@ class MyExecutorServiceWithShutdownTest {
     executor.shutdownNow();
     assertTrue(executor.isShutdown());
   }
+
+  @Test
+  void testCallableException() {
+    
+  }
 }
