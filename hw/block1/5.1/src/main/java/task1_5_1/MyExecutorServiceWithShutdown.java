@@ -67,7 +67,16 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
         pending.remove(task);
         executing++;
       }
-      var result = callback.call();
+
+      Exception exception = null;
+      V result = null;
+
+      try {
+        result = callback.call();
+      } catch (Exception e) {
+        exception = e;
+      }
+
       synchronized (this) {
         executing--;
         if (isShutdown() && executing == 0 && pending.size() == 0) {
@@ -75,7 +84,12 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
           this.notifyAll();
         }
       }
-      return result;
+
+      if (exception == null) {
+        return result;
+      } else {
+        throw exception;
+      }
     };
 
     pending.add(task);
