@@ -94,7 +94,15 @@ class MyExecutorServiceWithShutdownTest {
   }
 
   @Test
-  void testCallableException() {
-    
+  void testCallableWithException() throws InterruptedException {
+    Callable<Integer> callable = () -> {
+      throw new RuntimeException();
+    };
+
+    executor.submit(callable);
+    executor.shutdown();
+
+    Thread.sleep(1000);
+    assertTrue(executor.isTerminated());
   }
 }
