@@ -119,4 +119,28 @@ class MyExecutorServiceWithShutdownTest {
     List<Callable<?>> discarded = executor.shutdownNow();
     assertNotEquals(100, discarded.size());
   }
+
+  @Test
+  void testMultipleThreadsAwaitTermination() throws InterruptedException {
+    for (int i = 0; i < 10; i++) {
+      executor.submit(() -> {
+        Thread.sleep(1000);
+        return null;
+      });
+    }
+    executor.shutdown();
+
+    var t1 = new Thread(() -> {
+      executor.awaitTermination();
+    });
+    var t2 = new Thread(() -> {
+      executor.awaitTermination();
+    });
+    var t3 = new Thread(() -> {
+      executor.awaitTermination();
+    });
+    t1.join();
+    t2.join();
+    t3.join();
+  }
 }
