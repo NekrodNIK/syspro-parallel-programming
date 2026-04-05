@@ -111,6 +111,7 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
       state = State.Shutdown;
       if (pending.size() == 0 && executing == 0) {
         state = State.Terminated;
+        this.notifyAll();
       }
     }
   }
@@ -157,6 +158,7 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
 
       if (executing == 0) {
         state = State.Terminated;
+        this.notifyAll();
       }
     }
     return result;

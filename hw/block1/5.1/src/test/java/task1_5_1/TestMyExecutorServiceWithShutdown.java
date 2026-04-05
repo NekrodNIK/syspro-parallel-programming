@@ -57,20 +57,28 @@ class MyExecutorServiceWithShutdownTest {
 
   @Test
   void testIsTerminatedAfterShutdown() throws Exception {
+    var startLatch = new CountDownLatch(1);
+    
     executor.submit(() -> {
+      startLatch.await();
       Thread.sleep(1000);
       return null;
     });
 
     executor.shutdown();
     assertFalse(executor.isTerminated());
+    
+    startLatch.countDown();
     executor.awaitTermination();
     assertTrue(executor.isTerminated());
   }
 
   @Test
   void testAwaitTerminationBlocks() throws Exception {
+    var startLatch = new CountDownLatch(1);
+    
     executor.submit(() -> {
+      startLatch.await();
       Thread.sleep(200);
       return null;
     });
@@ -78,9 +86,10 @@ class MyExecutorServiceWithShutdownTest {
     executor.shutdown();
 
     long start = System.currentTimeMillis();
+    startLatch.countDown();
     executor.awaitTermination();
     long duration = System.currentTimeMillis() - start;
-
+    
     assertTrue(duration >= 200);
     assertTrue(executor.isTerminated());
   }
@@ -95,48 +104,59 @@ class MyExecutorServiceWithShutdownTest {
 
   @Test
   void testCallableWithException() throws InterruptedException {
+    var latch = new CountDownLatch(1);
+    
     Callable<Integer> callable = () -> {
+      latch.countDown();
       throw new RuntimeException();
     };
 
     executor.submit(callable);
     executor.shutdown();
 
+    latch.await();
     Thread.sleep(1000);
     assertTrue(executor.isTerminated());
   }
 
   @Test
   void testShutdownNow() throws InterruptedException {
+    var startLatch = new CountDownLatch(10);
+    
     for (int i = 0; i < 100; i++) {
       executor.submit(() -> {
-        Thread.sleep(10000);
-        return null;
+        startLatch.countDown();
+        while (true) {}
       });
     }
 
-    Thread.sleep(1000);
+    startLatch.await();
     List<Callable<?>> discarded = executor.shutdownNow();
-    assertNotEquals(100, discarded.size());
+    assertTrue(discarded.size() <= 90);
   }
 
   @Test
   void testMultipleThreadsAwaitTermination() throws InterruptedException {
+    var startLatch = new CountDownLatch(3);
+    
     for (int i = 0; i < 10; i++) {
       executor.submit(() -> {
-        Thread.sleep(1000);
+        startLatch.await();
         return null;
       });
     }
     executor.shutdown();
 
     var t1 = new Thread(() -> {
+      startLatch.countDown();
       executor.awaitTermination();
     });
     var t2 = new Thread(() -> {
+      startLatch.countDown();
       executor.awaitTermination();
     });
     var t3 = new Thread(() -> {
+      startLatch.countDown();
       executor.awaitTermination();
     });
     t1.join();
