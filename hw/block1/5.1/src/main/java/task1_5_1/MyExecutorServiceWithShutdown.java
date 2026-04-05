@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 
 public class MyExecutorServiceWithShutdown implements MyExecutorService {
   /**
@@ -62,7 +63,7 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
     task.callback = () -> {
       synchronized (this) {
         if (state == State.ForceShutdown) {
-          return null;
+          throw new CancellationException();
         }
         pending.remove(task);
         executing++;
@@ -108,6 +109,9 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
   synchronized public void shutdown() {
     if (!isShutdown()) {
       state = State.Shutdown;
+      if (pending.size() == 0 && executing == 0) {
+        state = State.Terminated;
+      }
     }
   }
 
@@ -150,6 +154,10 @@ public class MyExecutorServiceWithShutdown implements MyExecutorService {
         result.add(task.callback);
       }
       pending.clear();
+
+      if (executing == 0) {
+        state = State.Terminated;
+      }
     }
     return result;
   }

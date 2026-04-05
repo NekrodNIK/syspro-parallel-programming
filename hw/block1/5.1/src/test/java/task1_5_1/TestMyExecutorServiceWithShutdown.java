@@ -105,4 +105,18 @@ class MyExecutorServiceWithShutdownTest {
     Thread.sleep(1000);
     assertTrue(executor.isTerminated());
   }
+
+  @Test
+  void testShutdownNow() throws InterruptedException {
+    for (int i = 0; i < 100; i++) {
+      executor.submit(() -> {
+        Thread.sleep(10000);
+        return null;
+      });
+    }
+
+    Thread.sleep(1000);
+    List<Callable<?>> discarded = executor.shutdownNow();
+    assertNotEquals(100, discarded.size());
+  }
 }
