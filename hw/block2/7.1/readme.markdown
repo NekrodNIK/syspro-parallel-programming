@@ -2,7 +2,9 @@
 
 ## Description
 
-Assume we have a (possibly infinite) set of events `x1, x2, x3 ...`. Those events are totally ordered via `->` that is a [strict total order](https://en.wikipedia.org/wiki/Total_order). For every `x`, `y`, `z`
+Assume we have a (possibly infinite) set of events `x1, x2, x3 ...`.
+Those events are totally ordered via `->` that is a [strict total order](https://en.wikipedia.org/wiki/Total_order).
+For every `x`, `y`, `z`
 - Not `x -> x` (irreflexive)
 - If `x -> y` then not `y -> x` (asymmetric)
 - If `x -> y` and `y -> z` then `x -> z` (transitive)
